@@ -84,7 +84,8 @@ def infer_schema(config, streams, out_catalog=True, add_tstamp=True):
     data = generate_request(tap_stream_id, endpoint, auth_method,
                             headers,
                             config.get("username"),
-                            config.get("password"))
+                            config.get("password"),
+                            config.get("http_method"))
 
     # In case the record is not at the root level
     data = get_record_list(data, config.get("record_list_level"))
