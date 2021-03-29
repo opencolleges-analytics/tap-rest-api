@@ -290,7 +290,7 @@ def _giveup(exc):
 @utils.backoff((backoff.expo, requests.exceptions.RequestException), _giveup)
 @utils.ratelimit(20, 1)
 def generate_request(stream_id, url, auth_method="no_auth", headers=None,
-                     username=None, password=None):
+                     username=None, password=None, http_method=None):
     """
     url: URL with pre-encoded query. See get_endpoint()
     """
@@ -308,9 +308,14 @@ def generate_request(stream_id, url, auth_method="no_auth", headers=None,
     headers = headers or get_http_headers()
 
     with metrics.http_request_timer(stream_id) as timer:
-        resp = requests.get(url,
-                            headers=headers,
-                            auth=auth)
+        if http_method and http_method == 'POST':
+            resp = requests.post(url,
+                                headers=headers,
+                                auth=auth)
+        else:
+          resp = requests.get(url,
+                              headers=headers,
+                              auth=auth)
         timer.tags[metrics.Tag.http_status_code] = resp.status_code
         resp.raise_for_status()
         return resp.json()
