@@ -95,7 +95,8 @@ def sync_rows(config, state, tap_stream_id, key_properties=[], auth_method=None,
             rows = generate_request(tap_stream_id, endpoint, auth_method,
                                     headers,
                                     config.get("username"),
-                                    config.get("password"))
+                                    config.get("password"),
+                                    config.get("http_method"))
             rows = get_record_list(rows, config.get("record_list_level"))
 
             LOGGER.info("Current page %d" % page_number)
